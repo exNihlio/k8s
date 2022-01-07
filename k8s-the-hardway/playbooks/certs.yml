@@ -27,7 +27,7 @@
     ## Use selfsigned provider here
     - name: Generate the private CA Cert
       openssl_certificate:
-        csr_path: /etc/ssl/certs/k8s_ca.csr\
+        csr_path: /etc/ssl/certs/k8s_ca.csr
         force: false
         path: /etc/ssl/certs/k8s_ca.crt
         privatekey_path: /etc/ssl/private/k8s_ca.pem
