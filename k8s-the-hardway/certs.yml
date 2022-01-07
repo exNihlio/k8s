@@ -26,5 +26,5 @@
       openssl_certificate:
         csr_path: /etc/ssl/certs/k8s_ca.csr
         path: /etc/ssl/certs/k8s_ca.crt
-        privatekey_path: /etc/ssl/private/k8s_ca.pe
-        provider: ownca
+        privatekey_path: /etc/ssl/private/k8s_ca.pem
+        provider: selfsigned
