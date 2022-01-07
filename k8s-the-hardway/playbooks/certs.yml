@@ -2,7 +2,7 @@
   become: true
   gather_facts: false
   vars_files:
-    - vars.yml
+    - vars/vars.yml
   tasks:
     ## Provision a CA
     - name: Generate the private CA key

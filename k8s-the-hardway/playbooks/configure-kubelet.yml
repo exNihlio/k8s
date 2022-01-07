@@ -2,7 +2,7 @@
   gather_facts: yes
   become: yes
   vars_files:
-    - vars.yml
+    - vars/vars.yml
   tasks:
     - name: Create the kubelet config directory
       file:
