@@ -5,13 +5,13 @@
     - vars.yml
   tasks:
     ## Provision a CA
-    - name: Configure the private CA key
+    - name: Generate the private CA key
       openssl_privatekey:
         path: /etc/ssl/private/k8s_ca.pem
         size: 4096
         type: RSA
 
-    - name: Configure the private CA CSR
+    - name: Generate the private CA CSR
       openssl_csr:
         common_name: kubernetes         #CN
         country_name: US                #C
@@ -21,10 +21,35 @@
         path: /etc/ssl/certs/k8s_ca.csr
         privatekey_path: /etc/ssl/private/k8s_ca.pem
         state_or_province_name: UT      #ST
- 
-    - name: Configure the private CA Cert
+        
+    ## Use selfsigned provider here
+    - name: Generate the private CA Cert
       openssl_certificate:
         csr_path: /etc/ssl/certs/k8s_ca.csr
         path: /etc/ssl/certs/k8s_ca.crt
         privatekey_path: /etc/ssl/private/k8s_ca.pem
         provider: selfsigned
+
+    ## Provision Admin Client Certs
+    - name: Generate the admin client private key
+        path: /etc/ssl/private/k8s_admin_key.pem
+        size: 4096
+        type: RSA
+  
+    - name: Generate the admin client CSR
+        country_name: US                                    #C
+        locality_name: "Salt Lake City"                     #L
+        organization_name: "system:masters"                 #O
+        organizational_unit_name: "Kubernetes The Hard Way" #OU
+        path: /etc/ssl/certs/k8s_admin.csr
+        privatekey_path: /etc/ssl/private/k8s_admin_key.pem
+        state_or_province_name: UT                          #ST
+
+    ## Use ownca provider here
+    - name: Generate the the admin client cert
+      csr_path: /etc/ssl/certs/k8s_ca.csr
+        ownca_path: /etc/ssl/certs/k8s_ca.crt
+        ownca_privatekey_path: /etc/ssl/private/k8s_ca.pem
+        path: /etc/ssl/certs/k8s_ca.crt
+        privatekey_path: /etc/ssl/private/k8s_ca.pem
+        provider: ownca
