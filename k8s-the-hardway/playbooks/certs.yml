@@ -7,6 +7,7 @@
     ## Provision a CA
     - name: Generate the private CA key
       openssl_privatekey:
+        force: false
         path: /etc/ssl/private/k8s_ca.pem
         size: 4096
         type: RSA
@@ -15,6 +16,7 @@
       openssl_csr:
         common_name: Kubernetes          # CN
         country_name: US                 # C
+        force: false
         locality_name: "Salt Lake City"  # L
         organization_name: Kubernetes    # O
         organizational_unit_name: CA     # OU
@@ -25,7 +27,8 @@
     ## Use selfsigned provider here
     - name: Generate the private CA Cert
       openssl_certificate:
-        csr_path: /etc/ssl/certs/k8s_ca.csr
+        csr_path: /etc/ssl/certs/k8s_ca.csr\
+        force: false
         path: /etc/ssl/certs/k8s_ca.crt
         privatekey_path: /etc/ssl/private/k8s_ca.pem
         provider: selfsigned
@@ -33,6 +36,7 @@
     ## Provision Admin Client Certs
     - name: Generate the admin client private key
       openssl_privatekey:
+        force: false
         path: /etc/ssl/private/k8s_admin_key.pem
         size: 4096
         type: RSA
@@ -40,6 +44,7 @@
     - name: Generate the admin client CSR
       openssl_csr:
         country_name: US                                     # C
+        force: false
         locality_name: "Salt Lake City"                      # L
         organization_name: "system:masters"                  # O
         organizational_unit_name: "Kubernetes The Hard Way"  # OU
@@ -51,6 +56,7 @@
     - name: Generate the the admin client cert
       openssl_certificate:
         csr_path: /etc/ssl/certs/k8s_ca.csr
+        force: false
         ownca_path: /etc/ssl/certs/k8s_ca.crt
         ownca_privatekey_path: /etc/ssl/private/k8s_ca.pem
         path: /etc/ssl/certs/k8s_ca.crt
