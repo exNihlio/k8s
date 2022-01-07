@@ -19,7 +19,7 @@
         organization_name: kubernetes    # O
         organizational_unit_name: CA     # OU
         path: /etc/ssl/certs/k8s_ca.csr
-        privatekey_path: /etc/ssl/private/k8s_ca.pem
+        privatekey_path: /etc/ssl/private/k8s_ca.csr
         state_or_province_name: UT      # ST
 
     ## Use selfsigned provider here
