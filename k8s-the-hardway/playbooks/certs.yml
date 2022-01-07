@@ -62,3 +62,35 @@
         path: /etc/ssl/certs/k8s_admin.crt
         privatekey_path: /etc/ssl/private/k8s_admin_key.pem
         provider: ownca
+
+    ## Provision Kubelet client certs
+    - name: Generate the Kubelet client keys
+      openssl_privatekey:
+        force: false
+        path: /etc/ssl/private/k8s_kubelet_{{ item }}.pem
+        size: 4096
+        type: RSA
+      loop: "{{ worker_hostnames }}"
+
+    - name: Generate the Kubelet client CSRs
+      openssl_csr:
+        country_name: US                                     # C
+        force: false
+        locality_name: "Salt Lake City"                      # L
+        organization_name: "system:node:{{ item }}"          # O
+        organizational_unit_name: "Kubernetes The Hard Way"  # OU
+        path: /etc/ssl/certs/k8s_kubelet_{{ item }}.csr
+        privatekey_path: /etc/ssl/private/k8s_{{ item }}_key.pem
+        state_or_province_name: UT                           # ST
+      loop: "{{ worker_hostnames }}"
+
+    - name: Generate the the Kubelet client certs
+      openssl_certificate:
+        csr_path: /etc/ssl/certs/k8s_kubelet_{{ item }}.csr
+        force: false
+        ownca_path: /etc/ssl/certs/k8s_ca.crt
+        ownca_privatekey_path: /etc/ssl/private/k8s_ca.pem
+        path: /etc/ssl/certs/k8s_kubelet_{{ item }}.crt
+        privatekey_path: /etc/ssl/private/k8s_{{ item }}_key.pem
+        provider: ownca
+      loop: "{{ worker_hostnames }}"

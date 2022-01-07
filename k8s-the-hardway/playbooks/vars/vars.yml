@@ -21,7 +21,11 @@ libcontainer_crio_apt_key_url: |-
   kubic:libcontainers:stable:cri-o:{{ crio_version }}/
   {{ crio_os_version }}/Release.key
 container_runtime: cri-o
-hostnames:
-  - "k8s-node-1.k8s.dev"
-  - "k8s-node-2.k8s.dev"
-  - "k8s-node-3.k8s.dev"
+worker_hostnames:
+  - "worker-1"
+  - "worker-2"
+  - "worker-3"
+fqdns:
+  - worker-1.test.dev
+  - worker-2.test.dev
+  - worker-3.test.dev
