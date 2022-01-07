@@ -1,0 +1,30 @@
+- hosts: localhost
+  become: True
+  gather_facts: True
+  vars_files:
+    - vars.yml
+  tasks:
+    ## Provision a CA
+    - name: Configure the private CA key
+      openssl_key:
+        path: /etc/ssl/private/k8s_ca.pem
+        type: RSA
+        size: 4096
+
+    - name: Configure the private CA CSR
+      openssl_csr:
+        common_name: kubernetes         #CN
+        country_name: US                #C
+        locality_name: "Salt Lake City" #L
+        organization_name: kubernetes   #O
+        organization_unit_name: CA      #OU
+        state_or_province_name: UT      #ST
+    
+    - name: Configure the private CA Cert
+      openssl_certificate:
+        csr_path: /etc/ssl/certs/k8s_ca.csr
+        privatekey_path: /etc/ssl/private/k8s_ca.pem
+        path: /etc/ssl/certs/k8s_ca.crt
+        provider: ownca
+
+    
