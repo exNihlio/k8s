@@ -59,6 +59,6 @@
         force: false
         ownca_path: /etc/ssl/certs/k8s_ca.crt
         ownca_privatekey_path: /etc/ssl/private/k8s_ca.pem
-        path: /etc/ssl/certs/k8s_ca.crt
+        path: /etc/ssl/certs/k8s_admin.crt
         privatekey_path: /etc/ssl/private/k8s_admin_key.pem
         provider: ownca
