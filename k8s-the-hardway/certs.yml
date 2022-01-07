@@ -8,8 +8,8 @@
     - name: Configure the private CA key
       openssl_privatekey:
         path: /etc/ssl/private/k8s_ca.pem
-        type: RSA
         size: 4096
+        type: RSA
 
     - name: Configure the private CA CSR
       openssl_csr:
@@ -17,12 +17,12 @@
         country_name: US                #C
         locality_name: "Salt Lake City" #L
         organization_name: kubernetes   #O
-        organizational_unit_name: CA      #OU
+        organizational_unit_name: CA    #OU
         state_or_province_name: UT      #ST
-    
+ 
     - name: Configure the private CA Cert
       openssl_certificate:
         csr_path: /etc/ssl/certs/k8s_ca.csr
-        privatekey_path: /etc/ssl/private/k8s_ca.pem
         path: /etc/ssl/certs/k8s_ca.crt
+        privatekey_path: /etc/ssl/private/k8s_ca.pe
         provider: ownca
