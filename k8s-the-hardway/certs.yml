@@ -6,7 +6,7 @@
   tasks:
     ## Provision a CA
     - name: Configure the private CA key
-      openssl_key:
+      openssl_privatekey:
         path: /etc/ssl/private/k8s_ca.pem
         type: RSA
         size: 4096
@@ -26,5 +26,3 @@
         privatekey_path: /etc/ssl/private/k8s_ca.pem
         path: /etc/ssl/certs/k8s_ca.crt
         provider: ownca
-
-    
