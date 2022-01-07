@@ -13,14 +13,14 @@
 
     - name: Generate the private CA CSR
       openssl_csr:
-        common_name: kubernetes          # CN
+        common_name: Kubernetes          # CN
         country_name: US                 # C
         locality_name: "Salt Lake City"  # L
-        organization_name: kubernetes    # O
+        organization_name: Kubernetes    # O
         organizational_unit_name: CA     # OU
         path: /etc/ssl/certs/k8s_ca.csr
-        privatekey_path: /etc/ssl/private/k8s_ca.csr
-        state_or_province_name: UT      # ST
+        privatekey_path: /etc/ssl/private/k8s_ca.pem
+        state_or_province_name: UT       # ST
 
     ## Use selfsigned provider here
     - name: Generate the private CA Cert
