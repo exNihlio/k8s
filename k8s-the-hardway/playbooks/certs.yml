@@ -1,6 +1,6 @@
 - hosts: localhost
-  become: True
-  gather_facts: True
+  become: true
+  gather_facts: false
   vars_files:
     - vars.yml
   tasks:
@@ -13,15 +13,15 @@
 
     - name: Generate the private CA CSR
       openssl_csr:
-        common_name: kubernetes         #CN
-        country_name: US                #C
-        locality_name: "Salt Lake City" #L
-        organization_name: kubernetes   #O
-        organizational_unit_name: CA    #OU
+        common_name: kubernetes          # CN
+        country_name: US                 # C
+        locality_name: "Salt Lake City"  # L
+        organization_name: kubernetes    # O
+        organizational_unit_name: CA     # OU
         path: /etc/ssl/certs/k8s_ca.csr
         privatekey_path: /etc/ssl/private/k8s_ca.pem
-        state_or_province_name: UT      #ST
-        
+        state_or_province_name: UT      # ST
+
     ## Use selfsigned provider here
     - name: Generate the private CA Cert
       openssl_certificate:
@@ -32,22 +32,25 @@
 
     ## Provision Admin Client Certs
     - name: Generate the admin client private key
+      openssl_privatekey:
         path: /etc/ssl/private/k8s_admin_key.pem
         size: 4096
         type: RSA
-  
+
     - name: Generate the admin client CSR
-        country_name: US                                    #C
-        locality_name: "Salt Lake City"                     #L
-        organization_name: "system:masters"                 #O
-        organizational_unit_name: "Kubernetes The Hard Way" #OU
+      openssl_csr:
+        country_name: US                                     # C
+        locality_name: "Salt Lake City"                      # L
+        organization_name: "system:masters"                  # O
+        organizational_unit_name: "Kubernetes The Hard Way"  # OU
         path: /etc/ssl/certs/k8s_admin.csr
         privatekey_path: /etc/ssl/private/k8s_admin_key.pem
-        state_or_province_name: UT                          #ST
+        state_or_province_name: UT                           # ST
 
     ## Use ownca provider here
     - name: Generate the the admin client cert
-      csr_path: /etc/ssl/certs/k8s_ca.csr
+      openssl_certificate:
+        csr_path: /etc/ssl/certs/k8s_ca.csr
         ownca_path: /etc/ssl/certs/k8s_ca.crt
         ownca_privatekey_path: /etc/ssl/private/k8s_ca.pem
         path: /etc/ssl/certs/k8s_ca.crt
