@@ -55,10 +55,10 @@
     ## Use ownca provider here
     - name: Generate the the admin client cert
       openssl_certificate:
-        csr_path: /etc/ssl/certs/k8s_ca.csr
+        csr_path: /etc/ssl/certs/k8s_admin.csr
         force: false
         ownca_path: /etc/ssl/certs/k8s_ca.crt
         ownca_privatekey_path: /etc/ssl/private/k8s_ca.pem
         path: /etc/ssl/certs/k8s_ca.crt
-        privatekey_path: /etc/ssl/private/k8s_ca.pem
+        privatekey_path: /etc/ssl/private/k8s_admin_key.pem
         provider: ownca
