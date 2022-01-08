@@ -67,7 +67,7 @@
     - name: Generate the Kubelet client keys
       openssl_privatekey:
         force: false
-        path: /etc/ssl/private/k8s_kubelet_{{ item }}.pem
+        path: /etc/ssl/private/k8s_kubelet_{{ item }}_key.pem
         size: 4096
         type: RSA
       loop: "{{ worker_hostnames }}"
@@ -80,7 +80,7 @@
         organization_name: "system:node:{{ item }}"          # O
         organizational_unit_name: "Kubernetes The Hard Way"  # OU
         path: /etc/ssl/certs/k8s_kubelet_{{ item }}.csr
-        privatekey_path: /etc/ssl/private/k8s_{{ item }}_key.pem
+        privatekey_path: /etc/ssl/private/k8s_kubelet_{{ item }}_key.pem
         state_or_province_name: UT                           # ST
       loop: "{{ worker_hostnames }}"
 
@@ -91,6 +91,6 @@
         ownca_path: /etc/ssl/certs/k8s_ca.crt
         ownca_privatekey_path: /etc/ssl/private/k8s_ca.pem
         path: /etc/ssl/certs/k8s_kubelet_{{ item }}.crt
-        privatekey_path: /etc/ssl/private/k8s_{{ item }}_key.pem
+        privatekey_path: /etc/ssl/private/k8s_kubelet_{{ item }}_key.pem
         provider: ownca
       loop: "{{ worker_hostnames }}"
