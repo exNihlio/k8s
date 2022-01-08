@@ -94,3 +94,32 @@
         privatekey_path: /etc/ssl/private/k8s_kubelet_{{ item }}_key.pem
         provider: ownca
       loop: "{{ worker_hostnames }}"
+
+    ## Provision the Controller Manager client certs
+    - name: Generate Controller Manager client keys
+      openssl_privatekey:
+        force: false
+        path: /etc/ssl/private/k8s_controller_manager_key.pem
+        size: 4096
+        type: RSA
+
+    - name: Generate the Controller Manager client CSRs
+      openssl_csr:
+        country_name: US                                     # C
+        force: false
+        locality_name: "Salt Lake City"                      # L
+        organization_name: "system:kube-controller-manager"  # O
+        organizational_unit_name: "Kubernetes The Hard Way"  # OU
+        path: /etc/ssl/certs/k8s_controller_manager.csr
+        privatekey_path: /etc/ssl/private/k8s_controller_manager_key.pem
+        state_or_province_name: UT                           # ST
+
+    - name: Generate the the Controller Manager client certs
+      openssl_certificate:
+        csr_path: /etc/ssl/certs/k8s_controller_manager.csr
+        force: false
+        ownca_path: /etc/ssl/certs/k8s_ca.crt
+        ownca_privatekey_path: /etc/ssl/private/k8s_ca.pem
+        path: /etc/ssl/certs/k8s_controller_manager.crt
+        privatekey_path: /etc/ssl/private/k8s_controller_manager_key.pem
+        provider: ownca
