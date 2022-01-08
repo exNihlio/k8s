@@ -123,3 +123,61 @@
         path: /etc/ssl/certs/k8s_controller_manager.crt
         privatekey_path: /etc/ssl/private/k8s_controller_manager_key.pem
         provider: ownca
+
+    ## Provision Kube Proxy client certs
+    - name: Generate Kube Proxy client keys
+      openssl_privatekey:
+        force: false
+        path: /etc/ssl/private/k8s_kube_proxy_key.pem
+        size: 4096
+        type: RSA
+
+    - name: Generate the Kube Proxy client CSRs
+      openssl_csr:
+        country_name: US                                     # C
+        force: false
+        locality_name: "Salt Lake City"                      # L
+        organization_name: "system:kube-proxy"               # O
+        organizational_unit_name: "Kubernetes The Hard Way"  # OU
+        path: /etc/ssl/certs/k8s_kube_proxy.csr
+        privatekey_path: /etc/ssl/private/k8s_kube_proxy_key.pem
+        state_or_province_name: UT                           # ST
+
+    - name: Generate the the Kube Proxy client certs
+      openssl_certificate:
+        csr_path: /etc/ssl/certs/k8s_kube_proxy.csr
+        force: false
+        ownca_path: /etc/ssl/certs/k8s_ca.crt
+        ownca_privatekey_path: /etc/ssl/private/k8s_ca.pem
+        path: /etc/ssl/certs/k8s_kube_proxy.crt
+        privatekey_path: /etc/ssl/private/k8s_kube_proxy_key.pem
+        provider: ownca
+    
+    ## Provision the Scheduler Client certs
+    - name: Generate the Kube Scheduler client keys
+      openssl_privatekey:
+        force: false
+        path: /etc/ssl/private/k8s_kube_scheduler_key.pem
+        size: 4096
+        type: RSA
+
+    - name: Generate the Kube Scheduler client CSRs
+      openssl_csr:
+        country_name: US                                     # C
+        force: false
+        locality_name: "Salt Lake City"                      # L
+        organization_name: "system:kube-scheduler"               # O
+        organizational_unit_name: "Kubernetes The Hard Way"  # OU
+        path: /etc/ssl/certs/k8s_kube_scheduler.csr
+        privatekey_path: /etc/ssl/private/k8s_kube_scheduler_key.pem
+        state_or_province_name: UT                           # ST
+
+    - name: Generate the Kube Scheduler client certs
+      openssl_certificate:
+        csr_path: /etc/ssl/certs/k8s_kube_scheduler.csr
+        force: false
+        ownca_path: /etc/ssl/certs/k8s_ca.crt
+        ownca_privatekey_path: /etc/ssl/private/k8s_ca.pem
+        path: /etc/ssl/certs/k8s_kube_scheduler.crt
+        privatekey_path: /etc/ssl/private/k8s_kube_scheduler_key.pem
+        provider: ownca
