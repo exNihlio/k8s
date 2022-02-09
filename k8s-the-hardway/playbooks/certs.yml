@@ -53,7 +53,7 @@
         privatekey_path: /etc/ssl/private/k8s_{{ item.name }}_key.pem
       loop: '{{ k8s_certs_system_config }}'
 
-    - name: Generate the K8s system certs 
+    - name: Generate the K8s system certs
       openssl_certificate:
         csr_path: /etc/ssl/certs/k8s_{{ item.name }}.csr
         force: false
@@ -85,9 +85,9 @@
         subject_alt_name: '{{ item.dns }}'
       loop: '{{ k8s_certs_kubelet_config }}'
 
-    - name: Generate the K8s kubelet certs 
+    - name: Generate the K8s kubelet certs
       openssl_certificate:
-        csr_path: /etc/ssl/certs/k8s_{{ item.name }}.csr
+        csr_path: /etc/ssl/certs/k8s_kubelet_{{ item.name }}.csr
         force: false
         ownca_path: /etc/ssl/certs/k8s_ca.crt
         ownca_privatekey_path: /etc/ssl/private/k8s_ca_key.pem

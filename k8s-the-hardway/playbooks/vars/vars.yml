@@ -62,6 +62,14 @@ k8s_certs_system_config:
     organizational_unit_name: 'Kubernetes The Hard Way'
     state_or_province_name: 'UT'
 
+  - name: 'service_account'
+    country_name: 'US'
+    key_size: 4096
+    locality_name: 'Salt Lake City'
+    organization_name: 'Kubernetes'
+    organizational_unit_name: 'Kubernetes The Hard Way'
+    state_or_province_name: 'UT'
+
 k8s_certs_kubelet_config:
   - name: 'worker_1'
     dns:

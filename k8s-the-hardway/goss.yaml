@@ -1,5 +1,5 @@
 file:
-{{range .Vars.k8s_certs_kubelet_config}}
+{{range .Vars.k8s_certs_system_config}}
   /etc/ssl/private/k8s_{{.name}}_key.pem:
     exists: True
   /etc/ssl/certs/k8s_{{.name}}.csr:
