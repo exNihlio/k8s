@@ -1,0 +1,17 @@
+file:
+{{range .Vars.k8s_certs_kubelet_config}}
+  /etc/ssl/private/k8s_{{.name}}_key.pem:
+    exists: True
+  /etc/ssl/certs/k8s_{{.name}}.csr:
+    exists: True
+  /etc/ssl/certs/k8s_{{.name}}.crt:
+    exists: True
+{{end}}
+{{range .Vars.k8s_certs_kubelet_config}}
+  /etc/ssl/private/k8s_kubelet_{{.name}}_key.pem:
+    exists: True
+  /etc/ssl/certs/k8s_kubelet_{{.name}}.csr:
+    exists: True
+  /etc/ssl/certs/k8s_kubelet_{{.name}}.crt:
+    exists: True
+{{end}}

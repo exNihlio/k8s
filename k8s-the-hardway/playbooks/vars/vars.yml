@@ -21,11 +21,83 @@ libcontainer_crio_apt_key_url: |-
   kubic:libcontainers:stable:cri-o:{{ crio_version }}/
   {{ crio_os_version }}/Release.key
 container_runtime: cri-o
+k8s_certs_system_config:
+  - name: 'admin'
+    country_name: 'US'
+    key_size: 4096
+    locality_name: 'Salt Lake City'
+    organization_name: 'system:masters'
+    organizational_unit_name: 'Kubernetes The Hard Way'
+    state_or_province_name: 'UT'
+
+  - name: 'api_scheduler'
+    country_name: 'US'
+    key_size: 4096
+    locality_name: 'Salt Lake City'
+    organization_name: 'Kubernetes'
+    organizational_unit_name: 'Kubernetes The Hard Way'
+    state_or_province_name: 'UT'
+
+  - name: 'controller_manager'
+    country_name: 'US'
+    key_size: 4096
+    locality_name: 'Salt Lake City'
+    organization_name: 'system:kube-controller-manager'
+    organizational_unit_name: 'Kubernetes The Hard Way'
+    state_or_province_name: 'UT'
+
+  - name: 'kube_proxy'
+    country_name: 'US'
+    key_size: 4096
+    locality_name: 'Salt Lake City'
+    organization_name: 'system:kube-kube-proxy'
+    organizational_unit_name: 'Kubernetes The Hard Way'
+    state_or_province_name: 'UT'
+
+  - name: 'kube_scheduler'
+    country_name: 'US'
+    key_size: 4096
+    locality_name: 'Salt Lake City'
+    organization_name: 'system:kube-scheduler'
+    organizational_unit_name: 'Kubernetes The Hard Way'
+    state_or_province_name: 'UT'
+
+k8s_certs_kubelet_config:
+  - name: 'worker_1'
+    dns:
+      - 'DNS:worker-1.test.dev'
+    country_name: 'US'
+    key_size: 4096
+    locality_name: 'Salt Lake City'
+    organization_name: 'system:nodes'
+    organizational_unit_name: 'Kubernetes The Hard Way'
+    state_or_province_name: 'UT'
+
+  - name: 'worker_2'
+    dns:
+      - 'DNS:worker-2.test.dev'
+    country_name: 'US'
+    key_size: 4096
+    locality_name: 'Salt Lake City'
+    organization_name: 'system:nodes'
+    organizational_unit_name: 'Kubernetes The Hard Way'
+    state_or_province_name: 'UT'
+
+  - name: 'worker_3'
+    dns:
+      - 'DNS:worker-3.test.dev'
+    country_name: 'US'
+    key_size: 4096
+    locality_name: 'Salt Lake City'
+    organization_name: 'system:nodes'
+    organizational_unit_name: 'Kubernetes The Hard Way'
+    state_or_province_name: 'UT'
+
 worker_hostnames:
-  - "worker-1"
-  - "worker-2"
-  - "worker-3"
+  - 'worker-1'
+  - 'worker-2'
+  - 'worker-3'
 fqdns:
-  - worker-1.test.dev
-  - worker-2.test.dev
-  - worker-3.test.dev
+  - 'worker-1.test.dev'
+  - 'worker-2.test.dev'
+  - 'worker-3.test.dev'

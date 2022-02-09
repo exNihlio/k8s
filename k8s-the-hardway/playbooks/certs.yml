@@ -8,7 +8,7 @@
     - name: Generate the private CA key
       openssl_privatekey:
         force: false
-        path: /etc/ssl/private/k8s_ca.pem
+        path: /etc/ssl/private/k8s_ca_key.pem
         size: 4096
         type: RSA
 
@@ -21,7 +21,7 @@
         organization_name: Kubernetes    # O
         organizational_unit_name: CA     # OU
         path: /etc/ssl/certs/k8s_ca.csr
-        privatekey_path: /etc/ssl/private/k8s_ca.pem
+        privatekey_path: /etc/ssl/private/k8s_ca_key.pem
         state_or_province_name: UT       # ST
 
     ## Use selfsigned provider here
@@ -30,154 +30,68 @@
         csr_path: /etc/ssl/certs/k8s_ca.csr
         force: false
         path: /etc/ssl/certs/k8s_ca.crt
-        privatekey_path: /etc/ssl/private/k8s_ca.pem
+        privatekey_path: /etc/ssl/private/k8s_ca_key.pem
         provider: selfsigned
 
-    ## Provision Admin Client Certs
-    - name: Generate the admin client private key
+    ## System
+    - name: Generate K8s system keys
       openssl_privatekey:
         force: false
-        path: /etc/ssl/private/k8s_admin_key.pem
-        size: 4096
+        path: /etc/ssl/private/k8s_{{ item.name }}_key.pem
+        size: '{{ item.key_size }}'
         type: RSA
+      loop: '{{ k8s_certs_system_config }}'
 
-    - name: Generate the admin client CSR
+    - name: Generate the K8s system certs signing requests
       openssl_csr:
-        country_name: US                                     # C
+        country_name: '{{ item.country_name }}'
         force: false
-        locality_name: "Salt Lake City"                      # L
-        organization_name: "system:masters"                  # O
-        organizational_unit_name: "Kubernetes The Hard Way"  # OU
-        path: /etc/ssl/certs/k8s_admin.csr
-        privatekey_path: /etc/ssl/private/k8s_admin_key.pem
-        state_or_province_name: UT                           # ST
+        locality_name: '{{ item.locality_name }}'
+        organization_name: '{{ item.organization_name }}'
+        organizational_unit_name: '{{ item.organizational_unit_name }}'
+        path: /etc/ssl/certs/k8s_{{ item.name }}.csr
+        privatekey_path: /etc/ssl/private/k8s_{{ item.name }}_key.pem
+      loop: '{{ k8s_certs_system_config }}'
 
-    ## Use ownca provider here
-    - name: Generate the the admin client cert
+    - name: Generate the K8s system certs 
       openssl_certificate:
-        csr_path: /etc/ssl/certs/k8s_admin.csr
+        csr_path: /etc/ssl/certs/k8s_{{ item.name }}.csr
         force: false
         ownca_path: /etc/ssl/certs/k8s_ca.crt
-        ownca_privatekey_path: /etc/ssl/private/k8s_ca.pem
-        path: /etc/ssl/certs/k8s_admin.crt
-        privatekey_path: /etc/ssl/private/k8s_admin_key.pem
+        ownca_privatekey_path: /etc/ssl/private/k8s_ca_key.pem
+        path: /etc/ssl/certs/k8s_{{ item.name }}.crt
+        privatekey_path: /etc/ssl/private/k8s_{{ item.name }}_key.pem
         provider: ownca
+      loop: '{{ k8s_certs_system_config }}'
 
-    ## Provision Kubelet client certs
-    - name: Generate the Kubelet client keys
+    ## Kubelets
+    - name: Generate K8 kubelet keys
       openssl_privatekey:
         force: false
-        path: /etc/ssl/private/k8s_kubelet_{{ item }}_key.pem
-        size: 4096
+        path: /etc/ssl/private/k8s_kubelet_{{ item.name }}_key.pem
+        size: '{{ item.key_size }}'
         type: RSA
-      loop: "{{ worker_hostnames }}"
+      loop: '{{ k8s_certs_kubelet_config }}'
 
-    - name: Generate the Kubelet client CSRs
+    - name: Generate the K8s kubelet certs signing requests
       openssl_csr:
-        country_name: US                                     # C
+        country_name: '{{ item.country_name }}'
         force: false
-        locality_name: "Salt Lake City"                      # L
-        organization_name: "system:node:{{ item }}"          # O
-        organizational_unit_name: "Kubernetes The Hard Way"  # OU
-        path: /etc/ssl/certs/k8s_kubelet_{{ item }}.csr
-        privatekey_path: /etc/ssl/private/k8s_kubelet_{{ item }}_key.pem
-        state_or_province_name: UT                           # ST
-      loop: "{{ worker_hostnames }}"
+        locality_name: '{{ item.locality_name }}'
+        organization_name: '{{ item.organization_name }}'
+        organizational_unit_name: '{{ item.organizational_unit_name }}'
+        path: /etc/ssl/certs/k8s_kubelet_{{ item.name }}.csr
+        privatekey_path: /etc/ssl/private/k8s_kubelet_{{ item.name }}_key.pem
+        subject_alt_name: '{{ item.dns }}'
+      loop: '{{ k8s_certs_kubelet_config }}'
 
-    - name: Generate the the Kubelet client certs
+    - name: Generate the K8s kubelet certs 
       openssl_certificate:
-        csr_path: /etc/ssl/certs/k8s_kubelet_{{ item }}.csr
+        csr_path: /etc/ssl/certs/k8s_{{ item.name }}.csr
         force: false
         ownca_path: /etc/ssl/certs/k8s_ca.crt
-        ownca_privatekey_path: /etc/ssl/private/k8s_ca.pem
-        path: /etc/ssl/certs/k8s_kubelet_{{ item }}.crt
-        privatekey_path: /etc/ssl/private/k8s_kubelet_{{ item }}_key.pem
+        ownca_privatekey_path: /etc/ssl/private/k8s_ca_key.pem
+        path: /etc/ssl/certs/k8s_kubelet_{{ item.name }}.crt
+        privatekey_path: /etc/ssl/private/k8s_kubelet_{{ item.name }}_key.pem
         provider: ownca
-      loop: "{{ worker_hostnames }}"
-
-    ## Provision the Controller Manager client certs
-    - name: Generate Controller Manager client keys
-      openssl_privatekey:
-        force: false
-        path: /etc/ssl/private/k8s_controller_manager_key.pem
-        size: 4096
-        type: RSA
-
-    - name: Generate the Controller Manager client CSRs
-      openssl_csr:
-        country_name: US                                     # C
-        force: false
-        locality_name: "Salt Lake City"                      # L
-        organization_name: "system:kube-controller-manager"  # O
-        organizational_unit_name: "Kubernetes The Hard Way"  # OU
-        path: /etc/ssl/certs/k8s_controller_manager.csr
-        privatekey_path: /etc/ssl/private/k8s_controller_manager_key.pem
-        state_or_province_name: UT                           # ST
-
-    - name: Generate the the Controller Manager client certs
-      openssl_certificate:
-        csr_path: /etc/ssl/certs/k8s_controller_manager.csr
-        force: false
-        ownca_path: /etc/ssl/certs/k8s_ca.crt
-        ownca_privatekey_path: /etc/ssl/private/k8s_ca.pem
-        path: /etc/ssl/certs/k8s_controller_manager.crt
-        privatekey_path: /etc/ssl/private/k8s_controller_manager_key.pem
-        provider: ownca
-
-    ## Provision Kube Proxy client certs
-    - name: Generate Kube Proxy client keys
-      openssl_privatekey:
-        force: false
-        path: /etc/ssl/private/k8s_kube_proxy_key.pem
-        size: 4096
-        type: RSA
-
-    - name: Generate the Kube Proxy client CSRs
-      openssl_csr:
-        country_name: US                                     # C
-        force: false
-        locality_name: "Salt Lake City"                      # L
-        organization_name: "system:kube-proxy"               # O
-        organizational_unit_name: "Kubernetes The Hard Way"  # OU
-        path: /etc/ssl/certs/k8s_kube_proxy.csr
-        privatekey_path: /etc/ssl/private/k8s_kube_proxy_key.pem
-        state_or_province_name: UT                           # ST
-
-    - name: Generate the the Kube Proxy client certs
-      openssl_certificate:
-        csr_path: /etc/ssl/certs/k8s_kube_proxy.csr
-        force: false
-        ownca_path: /etc/ssl/certs/k8s_ca.crt
-        ownca_privatekey_path: /etc/ssl/private/k8s_ca.pem
-        path: /etc/ssl/certs/k8s_kube_proxy.crt
-        privatekey_path: /etc/ssl/private/k8s_kube_proxy_key.pem
-        provider: ownca
-    
-    ## Provision the Scheduler Client certs
-    - name: Generate the Kube Scheduler client keys
-      openssl_privatekey:
-        force: false
-        path: /etc/ssl/private/k8s_kube_scheduler_key.pem
-        size: 4096
-        type: RSA
-
-    - name: Generate the Kube Scheduler client CSRs
-      openssl_csr:
-        country_name: US                                     # C
-        force: false
-        locality_name: "Salt Lake City"                      # L
-        organization_name: "system:kube-scheduler"               # O
-        organizational_unit_name: "Kubernetes The Hard Way"  # OU
-        path: /etc/ssl/certs/k8s_kube_scheduler.csr
-        privatekey_path: /etc/ssl/private/k8s_kube_scheduler_key.pem
-        state_or_province_name: UT                           # ST
-
-    - name: Generate the Kube Scheduler client certs
-      openssl_certificate:
-        csr_path: /etc/ssl/certs/k8s_kube_scheduler.csr
-        force: false
-        ownca_path: /etc/ssl/certs/k8s_ca.crt
-        ownca_privatekey_path: /etc/ssl/private/k8s_ca.pem
-        path: /etc/ssl/certs/k8s_kube_scheduler.crt
-        privatekey_path: /etc/ssl/private/k8s_kube_scheduler_key.pem
-        provider: ownca
+      loop: '{{ k8s_certs_kubelet_config }}'
