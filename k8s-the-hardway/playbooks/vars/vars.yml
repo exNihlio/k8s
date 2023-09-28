@@ -1,27 +1,5 @@
-## Lets try this on Ubuntu 20.04 and ARM64
-## Use |- for wrapping lines
-ubuntu_codename: "bionic"
-system_arch: "amd64"
-google_apt_key_url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
-google_apt_url: "deb https://apt.kubernetes.io/ kubernetes-xenial main"
-docker_apt_key_url: https://download.docker.com/linux/ubuntu/gpg
-docker_apt_url: "deb [arch={{system_arch}}] https://download.docker.com/linux/ubuntu {{ ubuntu_codename }} stable"
-docker_disk: /dev/xvdb
-docker_disk_fs_type: xfs
-crio_version: 1.19
-crio_os_version: xUbuntu_18.04
-libcontainer_apt_url: "deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/{{ crio_os_version }}/ /"
-libcontainer_crio_apt_url: |-
-  'deb http://download.opensuse.org/repositories/devel:
-  /kubic:/libcontainers:/stable:/cri-o:/
-  {{ crio_version }}/{{ crio_os_version }}/ /'
-libcontainer_apt_key_url: https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/{{ crio_os_version }}/Release.key
-libcontainer_crio_apt_key_url: |-
-  https://download.opensuse.org/repositories/devel:
-  kubic:libcontainers:stable:cri-o:{{ crio_version }}/
-  {{ crio_os_version }}/Release.key
-container_runtime: cri-o
 k8s_certs_system_config:
+  # https://github.com/kelseyhightower/kubernetes-the-hard-way/blob/master/docs/04-certificate-authority.md#the-admin-client-certificate
   - name: 'admin'
     country_name: 'US'
     key_size: 4096
@@ -29,7 +7,7 @@ k8s_certs_system_config:
     organization_name: 'system:masters'
     organizational_unit_name: 'Kubernetes The Hard Way'
     state_or_province_name: 'UT'
-
+ # https://github.com/kelseyhightower/kubernetes-the-hard-way/blob/master/docs/04-certificate-authority.md#the-kubernetes-api-server-certificate
   - name: 'api_scheduler'
     country_name: 'US'
     key_size: 4096
@@ -37,7 +15,7 @@ k8s_certs_system_config:
     organization_name: 'Kubernetes'
     organizational_unit_name: 'Kubernetes The Hard Way'
     state_or_province_name: 'UT'
-
+# https://github.com/kelseyhightower/kubernetes-the-hard-way/blob/master/docs/04-certificate-authority.md#the-controller-manager-client-certificate
   - name: 'controller_manager'
     country_name: 'US'
     key_size: 4096
@@ -45,15 +23,15 @@ k8s_certs_system_config:
     organization_name: 'system:kube-controller-manager'
     organizational_unit_name: 'Kubernetes The Hard Way'
     state_or_province_name: 'UT'
-
+# https://github.com/kelseyhightower/kubernetes-the-hard-way/blob/master/docs/04-certificate-authority.md#the-kube-proxy-client-certificate
   - name: 'kube_proxy'
     country_name: 'US'
     key_size: 4096
     locality_name: 'Salt Lake City'
-    organization_name: 'system:kube-kube-proxy'
+    organization_name: 'system:node-proxier'
     organizational_unit_name: 'Kubernetes The Hard Way'
     state_or_province_name: 'UT'
-
+# https://github.com/kelseyhightower/kubernetes-the-hard-way/blob/master/docs/04-certificate-authority.md#the-scheduler-client-certificate
   - name: 'kube_scheduler'
     country_name: 'US'
     key_size: 4096
@@ -61,7 +39,7 @@ k8s_certs_system_config:
     organization_name: 'system:kube-scheduler'
     organizational_unit_name: 'Kubernetes The Hard Way'
     state_or_province_name: 'UT'
-
+# https://github.com/kelseyhightower/kubernetes-the-hard-way/blob/master/docs/04-certificate-authority.md#the-service-account-key-pair
   - name: 'service_account'
     country_name: 'US'
     key_size: 4096
@@ -69,11 +47,11 @@ k8s_certs_system_config:
     organization_name: 'Kubernetes'
     organizational_unit_name: 'Kubernetes The Hard Way'
     state_or_province_name: 'UT'
-
+# https://github.com/kelseyhightower/kubernetes-the-hard-way/blob/master/docs/04-certificate-authority.md#the-admin-client-certificate
 k8s_certs_kubelet_config:
-  - name: 'worker_1'
+  - name: 'worker-0'
     dns:
-      - 'DNS:worker-1.test.dev'
+      - 'DNS:worker-0.example.com'
     country_name: 'US'
     key_size: 4096
     locality_name: 'Salt Lake City'
@@ -81,9 +59,9 @@ k8s_certs_kubelet_config:
     organizational_unit_name: 'Kubernetes The Hard Way'
     state_or_province_name: 'UT'
 
-  - name: 'worker_2'
+  - name: 'worker-1'
     dns:
-      - 'DNS:worker-2.test.dev'
+      - 'DNS:worker-1.example.com'
     country_name: 'US'
     key_size: 4096
     locality_name: 'Salt Lake City'
@@ -91,9 +69,9 @@ k8s_certs_kubelet_config:
     organizational_unit_name: 'Kubernetes The Hard Way'
     state_or_province_name: 'UT'
 
-  - name: 'worker_3'
+  - name: 'worker-2'
     dns:
-      - 'DNS:worker-3.test.dev'
+      - 'DNS:worker-2.example.com'
     country_name: 'US'
     key_size: 4096
     locality_name: 'Salt Lake City'
@@ -102,10 +80,10 @@ k8s_certs_kubelet_config:
     state_or_province_name: 'UT'
 
 worker_hostnames:
+  - 'worker-0'
   - 'worker-1'
   - 'worker-2'
-  - 'worker-3'
 fqdns:
-  - 'worker-1.test.dev'
-  - 'worker-2.test.dev'
-  - 'worker-3.test.dev'
+  - 'worker-0.example.com'
+  - 'worker-1.example.com'
+  - 'worker-2.example.com

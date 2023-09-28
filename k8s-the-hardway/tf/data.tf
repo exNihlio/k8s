@@ -14,3 +14,6 @@ data "aws_ami" "opensuse_leap15_arm64" {
   }
   owners = ["679593333241"]
 }
+data "aws_availability_zones" "azs" {
+  state = "available"
+}

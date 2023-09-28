@@ -5,6 +5,7 @@
     - vars/vars.yml
   tasks:
     ## Provision a CA
+    ## https://github.com/kelseyhightower/kubernetes-the-hard-way/blob/master/docs/04-certificate-authority.md#certificate-authority
     - name: Generate the private CA key
       openssl_privatekey:
         force: false
@@ -95,3 +96,5 @@
         privatekey_path: /etc/ssl/private/k8s_kubelet_{{ item.name }}_key.pem
         provider: ownca
       loop: '{{ k8s_certs_kubelet_config }}'
+- hosts: k8s
+  become: true

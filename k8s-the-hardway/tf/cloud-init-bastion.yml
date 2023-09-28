@@ -2,5 +2,44 @@
 users:
   - name: exnihlio
     sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
     ssh_authorized_keys:
       - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIE9PQicXfyqM+FHW6aI00eMu3Y3m0pGCQp2eed2FEtzO"
+package_update: true
+package_upgrade: false
+packages:
+  - git
+  - python3-pip
+  - ansible
+write_files:
+  - path: /etc/ansible/hosts
+    owner: root:root
+    permissions: '0644'
+      #append: true
+      #defer: true
+    content: |
+       [worker]
+       worker-0.example.com
+       worker-1.example.com
+       worker-2.example.com
+       [controller]
+       controller-0.example.com
+       controller-1.example.com
+       controller-2.example.com
+  - path: /etc/ansible/ansible.cfg
+    owner: root:root
+    permissions: '0644'
+      #append: true
+      #defer: true
+    content: |
+      [defaults]
+      host_key_checking: False
+      [inventory]
+      [privilege_escalation]
+      [paramiko_connection]
+      [ssh_connection]
+      [persistent_connection]
+      [accelerate]
+      [selinux]
+      [colors]
+      [diff]
