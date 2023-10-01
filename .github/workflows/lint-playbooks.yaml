@@ -14,4 +14,4 @@ jobs:
   
     - name:  Lint Playbooks
       id: ansible-lint
-      uses: ansible/ansible-lint@v6
+      uses: ansible/ansible-lint@v6.20.2
