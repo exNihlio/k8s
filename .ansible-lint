@@ -1,0 +1,4 @@
+exclude_paths:
+  - kuard-book
+  - k8s-the-hard-way/tf
+  - k8s-the-hard-way/goss.yml
