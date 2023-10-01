@@ -86,4 +86,4 @@ worker_hostnames:
 fqdns:
   - 'worker-0.example.com'
   - 'worker-1.example.com'
-  - 'worker-2.example.com
+  - 'worker-2.example.com'

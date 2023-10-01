@@ -23,7 +23,7 @@ resource "aws_subnet" "this_private" {
   vpc_id = aws_vpc.this.id
   availability_zone = data.aws_availability_zones.azs.names[count.index]
   cidr_block = cidrsubnet(var.vpc_cidr_block, 12, count.index)
-  tags = merge(local.default_tags, 
+  tags = merge(local.default_tags,
     { Name = "private-subnet-${count.index}",
       availability_zone = data.aws_availability_zones.azs.names[count.index]})
 }
@@ -32,7 +32,7 @@ resource "aws_subnet" "this_public" {
   vpc_id = aws_vpc.this.id
   availability_zone = data.aws_availability_zones.azs.names[0]
   cidr_block = cidrsubnet(var.vpc_cidr_block, 12, 3)
-  tags = merge(local.default_tags, 
+  tags = merge(local.default_tags,
     { Name = "public-subnet-${data.aws_availability_zones.azs.names[0]}",
       availability_zone = data.aws_availability_zones.azs.names[0]})
 }
@@ -182,6 +182,14 @@ resource "aws_route53_record" "this_controller" {
   zone_id = aws_route53_zone.this.zone_id
   name = aws_instance.this_controller[count.index].tags_all["Name"]
   records = [aws_instance.this_worker[count.index].private_ip]
+  type = "A"
+  ttl = 300
+}
+
+resource "aws_route53_record" "this_bastion" {
+  zone_id = data.aws_route53_zone.this_public.zone_id
+  name     = aws_instance.this_bastion.tags_all["Name"]
+  records = [aws_instance.this_bastion.public_ip]
   type = "A"
   ttl = 300
 }
